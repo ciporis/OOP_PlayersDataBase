@@ -1,0 +1,7 @@
+D:\CSharp\LAMOP\PlayersDataBase\bin\Debug\DataBase_5_2.exe.config
+D:\CSharp\LAMOP\PlayersDataBase\bin\Debug\DataBase_5_2.exe
+D:\CSharp\LAMOP\PlayersDataBase\bin\Debug\DataBase_5_2.pdb
+D:\CSharp\LAMOP\PlayersDataBase\obj\Debug\DataBase_5_2.csproj.AssemblyReference.cache
+D:\CSharp\LAMOP\PlayersDataBase\obj\Debug\DataBase_5_2.csproj.CoreCompileInputs.cache
+D:\CSharp\LAMOP\PlayersDataBase\obj\Debug\DataBase_5_2.exe
+D:\CSharp\LAMOP\PlayersDataBase\obj\Debug\DataBase_5_2.pdb
