@@ -10,20 +10,18 @@ namespace DataBase_5_2
         {
             const string AddPlayerAction = "Add player";
             const string ShowAllPlayersAction = "Show all players";
-            const string RemovePlayerByIdAction = "Remove player by id";
-            const string EditPlayerAction = "Edit player";
-            const string BanPlayerByIdAction = "Ban player by id";
-            const string UnbanPlayerByIdAction = "Unban player by id";
+            const string RemovePlayerByIdAction = "Remove player by listIndex";
+            const string BanPlayerByIdAction = "Ban player by listIndex";
+            const string UnbanPlayerByIdAction = "Unban player by listIndex";
             const string ExitAction = "Exit";
 
-            PlayersDataBase playersDB = new PlayersDataBase();
+            DataBase playersDB = new DataBase();
 
             string[] actions = 
             {  
                 AddPlayerAction, 
                 ShowAllPlayersAction, 
                 RemovePlayerByIdAction,
-                EditPlayerAction,
                 BanPlayerByIdAction, 
                 UnbanPlayerByIdAction,
                 ExitAction
@@ -53,9 +51,6 @@ namespace DataBase_5_2
                     case RemovePlayerByIdAction:
                         RemovePlayer(playersDB);
                         break;
-                    case EditPlayerAction:
-                        EditPlayer(playersDB);
-                        break;
                     case BanPlayerByIdAction:
                         BanPlayer(playersDB);
                         break;
@@ -69,60 +64,28 @@ namespace DataBase_5_2
             }
         }
 
-        private static void UnbanPlayer(PlayersDataBase playersDB)
+        private static void UnbanPlayer(DataBase playersDB)
         {
-            Console.WriteLine("Input player's id");
+            Console.WriteLine("Input player's listIndex");
             int id = int.Parse(Console.ReadLine());
             playersDB.UnbanPlayerById(id);
         }
 
-        private static void BanPlayer(PlayersDataBase playersDB)
+        private static void BanPlayer(DataBase playersDB)
         {
-            Console.WriteLine("Input player's id");
+            Console.WriteLine("Input player's listIndex");
             int id = int.Parse(Console.ReadLine());
             playersDB.BanPlayerById(id);
         }
 
-        private static void EditPlayer(PlayersDataBase playersDB)
+        private static void RemovePlayer(DataBase playersDB)
         {
-            Console.WriteLine("Input player's id");
-            int id = int.Parse(Console.ReadLine());
-            Console.WriteLine("Input new player's nickname");
-            string nickname = Console.ReadLine();
-
-            while (playersDB.NickNameExists(nickname) == true)
-            {
-                Console.WriteLine("This nickname already exists! Input new one");
-                nickname = Console.ReadLine();
-            }
-
-            Console.WriteLine("Input new player's level");
-            int level = int.Parse(Console.ReadLine());
-            Console.WriteLine("Is player banned? Press y/n");
-            ConsoleKeyInfo pressedKeyInfo = Console.ReadKey();
-            bool isPlayerBanned = false;
-
-            switch (pressedKeyInfo.Key)
-            {
-                case ConsoleKey.Y:
-                    isPlayerBanned = true;
-                    break;
-                case ConsoleKey.N:
-                    isPlayerBanned = false;
-                    break;
-            }
-
-            playersDB.EditPlayer(id, nickname, level, isPlayerBanned);
-        }
-
-        private static void RemovePlayer(PlayersDataBase playersDB)
-        {
-            Console.WriteLine("Input player's id");
+            Console.WriteLine("Input player's listIndex");
             int id = int.Parse(Console.ReadLine());
             playersDB.RemovePlayerById(id);
         }
 
-        private static void ShowAllPlayers(PlayersDataBase playersDB)
+        private static void ShowAllPlayers(DataBase playersDB)
         {
             List<Player> players = playersDB.GetAllPlayers();
 
@@ -134,12 +97,17 @@ namespace DataBase_5_2
 
             foreach (Player player in players)
             {
-                Console.WriteLine($"{player.GetId()}: {player.GetNickname()} " +
-                    $"| {player.GetLevel()}lvl | is banned: {player.IsBanned()}");
+                string nickName = player.GetNickname();
+                int level = player.GetLevel();
+                bool isBanned = player.IsBanned();
+                int id = playersDB.GetPlayerId(player);
+
+                Console.WriteLine($"{id}: {nickName} " +
+                    $"| {level}lvl | is banned: {isBanned}");
             }
         }
 
-        public static void AddPlayer(PlayersDataBase playersDB)
+        public static void AddPlayer(DataBase playersDB)
         {
             Console.WriteLine("Input player's nickname");
 
@@ -153,71 +121,42 @@ namespace DataBase_5_2
 
             Console.WriteLine("Input player's level");
             int level = int.Parse(Console.ReadLine());
-            Console.WriteLine("Is player banned? Press y/n");
-            ConsoleKeyInfo pressedKeyInfo = Console.ReadKey();
-            bool isPlayerBanned = false;
 
-            switch (pressedKeyInfo.Key)
-            {
-                case ConsoleKey.Y:
-                    isPlayerBanned = true;
-                    break;
-                case ConsoleKey.N:
-                    isPlayerBanned = false;
-                    break;
-            }
-
-            playersDB.AddPlayer(nickname, level, isPlayerBanned);
+            playersDB.AddPlayer(nickname, level);
         }
     }
 
-    internal class PlayersDataBase
+    internal class DataBase
     {
-        private List<Player> _table = new List<Player>();
+        private List<Player> _playersList = new List<Player>();
 
         public bool NickNameExists(string nickname)
         {
-            return _table.Any(player => player.GetNickname() == nickname);
+            return _playersList.Any(player => player.GetNickname() == nickname);
         }
 
-        public void AddPlayer(string nickName, int level, bool isBanned)
+        public void AddPlayer(string nickName, int level)
         {
-            int id;
+            bool isBanned = false;
 
-            if (_table.Count == 0)
-                id = 0;
-            else
-                id = _table.Count;
-
-            var player = new Player(id, nickName, level, isBanned);
-
-            _table.Add(player);
+            var player = new Player(nickName, level, isBanned);
+            
+            _playersList.Add(player);
         }
 
         public void RemovePlayerById(int id)
         {
-            _table.RemoveAt(id);
+            _playersList.RemoveAt(id);
         }
 
         public Player GetPlayerById(int id)
         {
-            return _table[id];
+            return _playersList[id];
         }
 
         public List<Player> GetAllPlayers()
         {
-            return _table;
-        }
-
-        public void EditPlayer(int id, string nickName, int level, bool banFlag)
-        {
-            Player player = GetPlayerById(id);
-
-            player.EditNickname(nickName);
-            player.EditLevel(level);
-            player.EditBanState(banFlag);
-
-            _table[id] = player;
+            return _playersList;
         }
 
         public void BanPlayerById(int id)
@@ -226,7 +165,7 @@ namespace DataBase_5_2
 
             player.EditBanState(true);
 
-            _table[id] = player;
+            _playersList[id] = player;
         }
 
         public void UnbanPlayerById(int id)
@@ -235,28 +174,26 @@ namespace DataBase_5_2
 
             player.EditBanState(false);
 
-            _table[id] = player;
+            _playersList[id] = player;
+        }
+
+        public int GetPlayerId(Player player)
+        {
+            return _playersList.IndexOf(player);
         }
     }
 
     public class Player
     {
-        private int _id;
         private string _nickname;
         private int _level;
         private bool _isBanned;
 
-        public Player(int id, string nickname, int level, bool isBanned)
+        public Player(string nickname, int level, bool isBanned)
         {
-            _id = id;
             _nickname = nickname;
             _level = level;
             _isBanned = isBanned;
-        }
-
-        public int GetId()
-        {
-            return _id;
         }
 
         public string GetNickname()
@@ -264,19 +201,9 @@ namespace DataBase_5_2
             return _nickname;
         }
 
-        public void EditNickname(string nickname)
-        {
-            _nickname = nickname;
-        }
-
         public int GetLevel()
         {
             return _level;
-        }
-
-        public void EditLevel(int level)
-        {
-            _level = level;
         }
 
         public bool IsBanned()
