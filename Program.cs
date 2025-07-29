@@ -8,24 +8,14 @@ namespace DataBase_5_2
     {
         static void Main(string[] args)
         {
-            const string AddPlayerAction = "Add player";
-            const string ShowAllPlayersAction = "Show all players";
-            const string RemovePlayerByIdAction = "Remove player by listIndex";
-            const string BanPlayerByIdAction = "Ban player by listIndex";
-            const string UnbanPlayerByIdAction = "Unban player by listIndex";
-            const string ExitAction = "Exit";
+            const string AddPlayerCommand = "1";
+            const string ShowAllPlayersCommand = "2";
+            const string RemovePlayerByIdCommand = "3";
+            const string BanPlayerByIdCommand = "4";
+            const string UnbanPlayerByIdCommand = "5";
+            const string ExitCommand = "6";
 
-            DataBase playersDB = new DataBase();
-
-            string[] actions = 
-            {  
-                AddPlayerAction, 
-                ShowAllPlayersAction, 
-                RemovePlayerByIdAction,
-                BanPlayerByIdAction, 
-                UnbanPlayerByIdAction,
-                ExitAction
-            };
+            var playersDB = new DataBase();
 
             bool isWorking = true;
 
@@ -33,31 +23,33 @@ namespace DataBase_5_2
             {
                 Console.WriteLine("Выберите действие");
 
-                for (int i = 0; i < actions.Length; i++)
-                {
-                    Console.WriteLine($"{i}) {actions[i]}");
-                }
+                Console.WriteLine($"{AddPlayerCommand}) Add player");
+                Console.WriteLine($"{ShowAllPlayersCommand}) Show all players");
+                Console.WriteLine($"{RemovePlayerByIdCommand}) Remove player by listIndex");
+                Console.WriteLine($"{BanPlayerByIdCommand}) Ban player by listIndex");
+                Console.WriteLine($"{UnbanPlayerByIdCommand}) Unban player by listIndex");
+                Console.WriteLine($"{ExitCommand}) Exit");
 
-                int actionIndex = int.Parse(Console.ReadLine());
+                string command = Console.ReadLine();
 
-                switch (actions[actionIndex])
+                switch (command)
                 {
-                    case AddPlayerAction:
+                    case AddPlayerCommand:
                         AddPlayer(playersDB);                        
                         break;
-                    case ShowAllPlayersAction:
+                    case ShowAllPlayersCommand:
                         ShowAllPlayers(playersDB);
                         break;
-                    case RemovePlayerByIdAction:
+                    case RemovePlayerByIdCommand:
                         RemovePlayer(playersDB);
                         break;
-                    case BanPlayerByIdAction:
+                    case BanPlayerByIdCommand:
                         BanPlayer(playersDB);
                         break;
-                    case UnbanPlayerByIdAction:
+                    case UnbanPlayerByIdCommand:
                         UnbanPlayer(playersDB);
                         break;
-                    case ExitAction:
+                    case ExitCommand:
                         isWorking = false;
                         break;
                 }
